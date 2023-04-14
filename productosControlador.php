@@ -1,4 +1,5 @@
 <?php
+header('access-control-allow-origin: *');
 header('Content-Type: application/json; charset=UTF-8');
 require 'modeloProducto.php';
 
@@ -13,7 +14,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         $_POST = json_decode(file_get_contents('php://input', true));
 
-        if (isset($_POST->nombre) && is_null($_POST->nombre) && empty(trim($_POST->nombre)) && strlen($_POST->nombre)>15) {
+        if (!isset($_POST->nombre) && is_null($_POST->nombre) && empty(trim($_POST->nombre)) && strlen($_POST->nombre)>15) {
             $respuesta = ['error', 'El nombre de producto no debe estar vacia y no se debe superior a 15 caracteres'];
         } else if (!isset($_POST->descripcion) && is_null($_POST->descripcion) && empty(trim($_POST->descripcion)) && strlen($_POST->descripcion)>80) {
             $respuesta = ['error', '<La descripcion de producto no debe estar vacia y no se debe superior a 80 caracteres'];
@@ -23,8 +24,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (!isset($_POST->valor) && is_null($_POST->valor) && empty(trim($_POST->valor)) && !is_numeric($_POST->valor)) {
             $respuesta = ['error', 'El valor de producto no debe estar vacio y debe tener solo numeros'];
         } else {
-            var_dump($_POST);
-           // $respuesta = $productosModelo->guadarProductos($_POST->nombre, $_POST->categoria, $_POST->descripcion, $_POST->valor);
+           $respuesta = $productosModelo->guadarProductos($_POST->nombre, $_POST->categoria, $_POST->descripcion, $_POST->valor);
         }
         echo json_encode($respuesta);
 
